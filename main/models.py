@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+from django.conf import settings
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, email, nome, senha=None, telefone=None, morador_local=False, cpf=None):
@@ -31,11 +32,15 @@ class UsuarioManager(BaseUserManager):
         return usuario
 
 class Usuario(AbstractBaseUser):
-    email = models.EmailField(unique=True)
     nome = models.CharField(max_length=255)
-    telefone = models.CharField(max_length=15, null=True, blank=True)  # Para telefone
-    morador_local = models.BooleanField(default=False)  # Indica se é morador local
-    cpf = models.CharField(max_length=11, null=True, blank=True)  # CPF, opcional para turistas
+    telefone = models.CharField(max_length=15, null=True, blank=True)
+
+    username = None
+    email = models.EmailField(unique=True)
+
+    morador_local = models.BooleanField(default=False)
+    cpf = models.CharField(max_length=11, null=True, blank=True, unique=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -46,3 +51,32 @@ class Usuario(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class RestauranteManager(models.Manager):
+    def create_restaurante(self, nome, endereco, latitude, longitude, owner):
+        if not nome or not endereco:
+            raise ValueError(_('O restaurante deve ter um nome e endereço válidos.'))
+
+        restaurante = self.model(
+            nome=nome,
+            endereco=endereco,
+            latitude=latitude,
+            longitude=longitude,
+            owner=owner
+        )
+        restaurante.save(using=self._db)
+        return restaurante
+
+class Restaurante(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="restaurantes")
+    nome = models.CharField(max_length=255)
+    endereco = models.CharField(max_length=255)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    data_adicao = models.DateTimeField(auto_now_add=True)
+
+    objects = RestauranteManager()
+
+    def __str__(self):
+        return self.nome

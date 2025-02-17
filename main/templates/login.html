@@ -7,32 +7,127 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v={{ STATIC_VERSION }}">
     <title>Login - MyGourmet</title>
     <style>
-        /* Centraliza a imagem do logo */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            margin: 0;
-            text-align: center;
-        }
-
-        .logo {
-            width: 150px; /* Ajuste o tamanho da logo conforme necessário */
-            margin-bottom: 20px; /* Espaço abaixo do logo */
+            min-height: 100vh;
+            background-color: #f7f7f7;
+            color: #333;
+            padding: 0 20px;
+            flex-direction: column;
+            height: 100%; /* Aumentando a altura da página */
+            padding-bottom: 50px; /* Adicionando um pouco de padding no rodapé */
         }
 
         .container {
-            text-align: center;
             background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 380px; 
-            min-height: 600px; /* Tamanho do formulário */
+            max-width: 450px;
+            text-align: center;
+            margin-bottom: 60px; /* Distância do final da página */
         }
+
+        .logo {
+            width: 160px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        .login-form input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-form button:hover {
+            background-color: #45a049;
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4CAF50;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #4CAF50;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .signup-link:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+
+        /* Estilo para mensagens de erro no rodapé */
+        .alert {
+            position: fixed;
+            bottom: 40px;  /* Distância do rodapé ajustada */
+            left: 50%;
+            transform: translateX(-50%);  /* Centraliza horizontalmente */
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 8px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 90%;  /* Tamanho controlado */
+            width: auto;  /* Ajuste automático do tamanho */
+            min-width: 250px;  /* Garantir que tenha uma largura mínima */
+        }
+
     </style>
 </head>
 <body>
@@ -40,20 +135,38 @@
         <!-- Logo Centralizada -->
         <img src="{% static 'images/logo.png' %}" alt="Logo MyGourmet" class="logo">
 
-        <h1></h1>
-        <!-- Formulário com action apontando para a URL 'login' -->
+        <h1>Bem-vindo ao MyGourmet</h1>
+
+        <!-- Formulário de Login -->
         <form method="post" class="login-form" action="{% url 'login_view' %}">
             {% csrf_token %}
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br>
 
-            <label for="senha">Senha:</label>
-            <input type="password" id="senha" name="senha" required><br>
+            <!-- Adiciona o campo 'next' se presente na URL -->
+            {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
 
-            <a href="#" class="forgot-password">Esqueceu a Senha?</a><br>
-            <button type="submit">Login</button>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Seu email" required>
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
+
+            <a href="#" class="forgot-password">Esqueceu a senha?</a>
+
+            <button type="submit">Entrar</button>
         </form>
+
         <a href="{% url 'registro' %}" class="signup-link">Não tem conta? Registre-se!</a>
     </div>
+
+    <!-- Exibe mensagens de erro no rodapé -->
+    {% if messages %}
+        <div class="alert">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
 </body>
 </html>

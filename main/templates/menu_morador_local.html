@@ -70,12 +70,10 @@
     <h1>Menu Morador Local</h1>
 
     <ul>
-        <li><a href="#">Restaurantes</a></li>
-        <li><a href="#">Adicionar Restaurantes</a></li>
-        <li><a href="#">Reservas</a></li>
-        <li><a href="#">Avaliações</a></li>
-        <li><a href="#">Mudar Senha</a></li>
-        <li><a href="{% url 'login_view' %}">Sair</a></li>
+        <li><a href="{% url 'restaurantes' %}">Restaurantes</a></li>
+        <li><a href="{% url 'gerenciar_restaurantes' %}">Gerenciar Restaurantes</a></li>
+        <li><a href="{% url 'mudar_senha' %}">Mudar Senha</a></li>
+        <li><a href="{% url 'logout' %}">Sair</a></li>
     </ul>
 
 </body>

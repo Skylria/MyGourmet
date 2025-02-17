@@ -161,6 +161,17 @@
         html, body {
             scroll-behavior: smooth;
         }
+
+        /* Estilo da mensagem de erro */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -168,6 +179,14 @@
     <div class="main-container">
         <div class="form-container">
             <h1>Registro</h1>
+
+            <!-- Exibir a mensagem de erro (se houver) -->
+            {% if erro %}
+                <div class="error-message">
+                    <strong>{{ erro }}</strong>
+                </div>
+            {% endif %}
+
             <form method="post">
                 {% csrf_token %}
 
