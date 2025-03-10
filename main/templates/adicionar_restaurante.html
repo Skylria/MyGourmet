@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v={{ STATIC_VERSION }}">
+    <title>Adicionar Restaurante - MyGourmet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 1.1rem;
+            color: #333;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-size: 1.8rem;
+            color: #4CAF50;
+        }
+
+        .form-header p {
+            font-size: 1rem;
+            color: #777;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Adicionar Novo Restaurante</h2>
+            <p>Preencha as informações abaixo para adicionar seu restaurante</p>
+        </div>
+
+        <!-- Exibindo as mensagens -->
+        {% if messages %}
+            <div class="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Formulário de Adição -->
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nome">Nome do Restaurante</label>
+                {{ form.nome }}
+            </div>
+
+            <div class="form-group">
+                <label for="endereco">Endereço</label>
+                {{ form.endereco }}
+            </div>
+
+            <div class="form-group">
+                <label for="latitude">Latitude</label>
+                {{ form.latitude }}
+            </div>
+
+            <div class="form-group">
+                <label for="longitude">Longitude</label>
+                {{ form.longitude }}
+            </div>
+
+            <!-- Removido o campo 'categoria' e 'horario_funcionamento' -->
+
+            <div class="form-group">
+                <button type="submit">Adicionar Restaurante</button>
+            </div>
+        </form>
+
+        <!-- Botão de Voltar -->
+        <a href="{% url 'gerenciar_restaurantes' %}" class="back-button">Voltar ao Gerenciamento</a>
+    </div>
+
+</body>
+</html>

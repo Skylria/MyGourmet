@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurantes Próximos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .restaurant-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 75%;
+        }
+
+        .restaurant-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .restaurant-item h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #4CAF50;
+        }
+
+        .restaurant-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .restaurant-item a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #4CAF50;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .restaurant-item a:hover {
+            background-color: #45a049;
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 30px;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 200px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+        .user-location {
+            background-color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 20%;
+            max-width: 300px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            align-self: flex-start;
+        }
+
+        .user-location h3 {
+            font-size: 1.1rem;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .user-location p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .user-location span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .location-button {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #4CAF50;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .location-button:hover {
+            background-color: #45a049;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .avaliacoes-comentarios {
+            margin-top: 20px;
+        }
+
+        .avaliacoes-comentarios h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .avaliacao-item, .comentario-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .avaliacao-item p, .comentario-item p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .avaliacao-item span, .comentario-item span {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .messages {
+        margin: 20px 0;
+    }
+    .alert {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+    .alert-error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+    </style>
+</head>
+<body>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h1>Restaurantes Próximos</h1>
+
+    <!-- Depuração: Exibe o valor de menu_url -->
+    <p></p>
+
+    <div class="content">
+        <!-- Exibindo a localização do usuário -->
+        <div class="user-location">
+            <h3>Localização Atual</h3>
+            <p><span>Latitude:</span> {{ latitude }}</p>
+            <p><span>Longitude:</span> {{ longitude }}</p>
+            <a href="https://www.google.com/maps?q={{ latitude }},{{ longitude }}" target="_blank" class="location-button">
+                Ver no Google Maps
+            </a>
+        </div>
+
+        <!-- Lista de restaurantes -->
+        <div class="restaurant-list">
+            {% for restaurant in restaurants %}
+                <!-- Verifica se o restaurante é externo e se já existe no banco de dados -->
+                {% if not restaurant.pode_avaliar_comentar %}
+                    {% if restaurant.name not in restaurantes_banco_nomes %}
+                        <div class="restaurant-item">
+                            <h3>{{ restaurant.name }}</h3>
+                            <p><strong>Endereço:</strong> {{ restaurant.address }}</p>
+                            <p><strong>Avaliação Média:</strong> {{ restaurant.media_avaliacoes|default:"N/A" }}</p>
+                            <p><strong>Comentários:</strong> {{ restaurant.total_comentarios }}</p>
+                            <a href="https://www.google.com/maps?q={{ restaurant.latitude }},{{ restaurant.longitude }}" target="_blank">Ver no Google Maps</a>
+                            <a href="{% url 'adicionar_restaurante_externo' restaurant.name restaurant.address restaurant.latitude restaurant.longitude %}">Avaliar</a>
+                            <a href="{% url 'adicionar_restaurante_externo' restaurant.name restaurant.address restaurant.latitude restaurant.longitude %}">Comentar</a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <!-- Exibe restaurantes do banco de dados -->
+                    <div class="restaurant-item">
+                        <h3>{{ restaurant.name }}</h3>
+                        <p><strong>Endereço:</strong> {{ restaurant.address }}</p>
+                        <p><strong>Avaliação Média:</strong> {{ restaurant.media_avaliacoes|default:"N/A" }}</p>
+                        <p><strong>Comentários:</strong> {{ restaurant.total_comentarios }}</p>
+                        <a href="https://www.google.com/maps?q={{ restaurant.latitude }},{{ restaurant.longitude }}" target="_blank">Ver no Google Maps</a>
+                        <a href="{% url 'ver_avaliacoes_comentarios' restaurant.id %}">Ver Avaliações e Comentários</a>
+                        <a href="{% url 'adicionar_avaliacao' restaurant.id %}">Avaliar</a>
+                        <a href="{% url 'adicionar_comentario' restaurant.id %}">Comentar</a>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <p>Nenhum restaurante encontrado próximo à sua localização.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Mapa do Google com os restaurantes e a localização do usuário -->
+    <div id="map"></div>
+
+    <!-- Botão de voltar -->
+    <a href="{% url menu_url %}" class="back-button">Voltar</a>
+
+    <script>
+        function initMap() {
+            // Cria o mapa centrado na localização do usuário
+            var userLocation = { lat: {{ latitude }}, lng: {{ longitude }} };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: userLocation
+            });
+
+            // Marcador para a localização do usuário
+            new google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: 'Você está aqui!',
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                }
+            });
+
+            // Adicionar marcadores para os restaurantes
+            {% for restaurant in restaurants %}
+                var restaurantLocation = { lat: {{ restaurant.latitude }}, lng: {{ restaurant.longitude }} };
+                new google.maps.Marker({
+                    position: restaurantLocation,
+                    map: map,
+                    title: '{{ restaurant.name }}',
+                    icon: {
+                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                    }
+                });
+            {% endfor %}
+        }
+    </script>
+    <!-- Carrega a API do Google Maps com sua chave -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap" async defer></script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v={{ STATIC_VERSION }}">
+    <title>Menu Morador Local - MyGourmet</title>
+    <style>
+        /* Resetando margens e padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center; /* Centralizando todo o conteúdo dentro do body */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        ul li {
+            margin: 15px 0;
+        }
+
+        ul li a {
+            display: inline-block;
+            padding: 14px 30px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        ul li a:hover {
+            background-color: #45a049;
+            transform: translateY(-3px); /* Efeito de "levitação" no hover */
+        }
+
+        ul li a:active {
+            transform: translateY(1px); /* Leve efeito de clique */
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Menu Morador Local</h1>
+
+    <ul>
+        <li><a href="{% url 'restaurantes_view' %}">Restaurantes</a></li>
+        <li><a href="{% url 'gerenciar_restaurantes' %}">Adicionar Restaurantes</a></li>
+        <li><a href="{% url 'mudar_senha' %}">Mudar Senha</a></li>
+        <li><a href="{% url 'logout' %}">Sair</a></li>
+    </ul>
+
+</body>
+</html>

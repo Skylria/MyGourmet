@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações e Comentários - {{ restaurante.nome }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .restaurante-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .restaurante-info h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .restaurante-info p {
+            color: #666;
+        }
+
+        .avaliacoes-comentarios {
+            margin-top: 20px;
+        }
+
+        .avaliacoes-comentarios h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .avaliacao-item, .comentario-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .avaliacao-item p, .comentario-item p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .avaliacao-item span, .comentario-item span {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Avaliações e Comentários</h1>
+
+    <div class="container">
+        <!-- Informações do Restaurante -->
+        <div class="restaurante-info">
+            <h2>{{ restaurante.nome }}</h2>
+            <p><strong>Endereço:</strong> {{ restaurante.endereco }}</p>
+            <p><strong>Avaliação Média:</strong> {{ restaurante.media_avaliacoes|default:"N/A" }}</p>
+            <p><strong>Total de Comentários:</strong> {{ restaurante.total_comentarios }}</p>
+        </div>
+
+        <!-- Lista de Avaliações -->
+        <div class="avaliacoes-comentarios">
+            <h3>Avaliações</h3>
+            {% if avaliacoes %}
+                {% for avaliacao in avaliacoes %}
+                    <div class="avaliacao-item">
+                        <p><span>Usuário:</span> {{ avaliacao.usuario.nome }}</p>
+                        <p><span>Nota:</span> {{ avaliacao.nota }}</p>
+                        <p><span>Data:</span> {{ avaliacao.data_avaliacao|date:"d/m/Y H:i" }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhuma avaliação disponível.</p>
+            {% endif %}
+        </div>
+
+        <!-- Lista de Comentários -->
+        <div class="avaliacoes-comentarios">
+            <h3>Comentários</h3>
+            {% if comentarios %}
+                {% for comentario in comentarios %}
+                    <div class="comentario-item">
+                        <p><span>Usuário:</span> {{ comentario.usuario.nome }}</p>
+                        <p><span>Comentário:</span> {{ comentario.texto }}</p>
+                        <p><span>Data:</span> {{ comentario.data_comentario|date:"d/m/Y H:i" }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhum comentário disponível.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{% url 'restaurantes_view' %}" class="back-link">Voltar para a lista de restaurantes</a>
+
+</body>
+</html>
